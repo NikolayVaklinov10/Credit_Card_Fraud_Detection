@@ -59,14 +59,25 @@ weight_3_node = tf.Variable(tf.zeros([num_layer_2_cells, output_dimensions]), na
 biases_3_node = tf.Variable(tf.zeros([output_dimensions]), name='biases_3')
 
 
+def network(input_tensor):
+    layer1 = tf.nn.sigmoid(tf.matmul(input_tensor, weight_1_node) + biases_1_node)
+    layer2 = tf.nn.dropout(tf.nn.sigmoid(tf.matmul(layer1, weight_2_node) + biases_2_node), 0.85)
+    layer3 = tf.nn.softmax(tf.matmul(layer2, weight_3_node) + biases_3_node)
+    return layer3
 
 
+y_train_prediction = network(X_train_node)
+y_test_prediction = network(X_test_node)
+
+cross_entropy = tf.losses.softmax_cross_entropy(y_train_node, y_train_prediction)
+
+optimizer = tf.train.AdadeltaOptimizer(0.005).minimize(cross_entropy)
 
 
-
-
-
-
+def calculate_accuracy(actual, predicted):
+    actual = np.argmax(actual, 1)
+    predicted = np.argmax(predicted, 1)
+    return 100 * np.sum(np.equal(predicted, actual)) / predicted.shape[0]
 
 
 
