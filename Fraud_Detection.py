@@ -80,9 +80,26 @@ def calculate_accuracy(actual, predicted):
     return 100 * np.sum(np.equal(predicted, actual)) / predicted.shape[0]
 
 
+num_epochs = 100
 
 
+import time
 
+
+with tf.Session() as session:
+    tf.global_variables_initializer().run()
+    for epoch in range(num_epochs):
+
+        start_time = time.time()
+
+        _, cross_entropy_score = session.run([optimizer, cross_entropy],
+                                            feed_dict={X_train_node: raw_X_train, y_train_node: raw_y_train})
+
+        if epoch % 10 == 0:
+            timer = time.time() - start_time
+
+            print('Epoch: {}'.format(epoch), 'Current loss: {0:.4f}'.format(cross_entropy_score),
+                  'Elapsed time: {0:.2f}seconds'.format(timer))
 
 
 
