@@ -29,13 +29,34 @@ train_size = int(0.8 * len(ar_X))
 (raw_X_train, raw_y_train) = (ar_X[:train_size], ar_y[:train_size])
 (raw_X_test, raw_y_test) = (ar_X[train_size:], ar_y[train_size:])
 
+count_legit, count_fraud = np.unique(credit_card_data['Class'], return_counts=True)[1]
+fraud_ratio = float(count_fraud / (count_legit + count_fraud))
+print("Percent of fraudulent transactions: ", fraud_ratio)
 
+weighting = 1 / fraud_ratio
+raw_y_train[:, 1] = raw_y_train[:,  1] * weighting
 
+import tensorflow as tf
 
+input_dimensions = ar_X.shape[1]
+output_dimensions = ar_y.shape[1]
+num_layer_1_cells = 100
+num_layer_2_cells = 150
 
+X_train_node = tf.placeholder(tf.float32, [None, input_dimensions], name='X_train')
+y_train_node = tf.placeholder(tf.float32, [None, output_dimensions], name='y_train')
 
+X_test_node = tf.constant(raw_X_test, name='X_test')
+y_test_node = tf.constant(raw_y_test, name='y_test')
 
+weight_1_node = tf.Variable(tf.zeros([input_dimensions, num_layer_1_cells]), name='weight_1')
+biases_1_node = tf.Variable(tf.zeros([num_layer_1_cells]), name='biases_1')
 
+weight_2_node = tf.Variable(tf.zeros([num_layer_1_cells, num_layer_2_cells]), name='weight_2')
+biases_2_node = tf.Variable(tf.zeros([num_layer_2_cells]), name='biases_2')
+
+weight_3_node = tf.Variable(tf.zeros([num_layer_2_cells, output_dimensions]), name='weight_3')
+biases_3_node = tf.Variable(tf.zeros([output_dimensions]), name='biases_3')
 
 
 
