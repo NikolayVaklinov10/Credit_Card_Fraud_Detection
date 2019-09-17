@@ -101,9 +101,15 @@ with tf.Session() as session:
             print('Epoch: {}'.format(epoch), 'Current loss: {0:.4f}'.format(cross_entropy_score),
                   'Elapsed time: {0:.2f}seconds'.format(timer))
 
+    final_y_test = y_test_node.eval()
+    final_y_test_prediction = y_test_prediction.eval()
+    final_accuracy = calculate_accuracy(final_y_test, final_y_test_prediction)
+    print("Final accuracy: {0: .2f}%".format(final_accuracy))
 
-
-
+final_fraud_y_test = final_y_test[final_y_test[:, 1] == 1]
+final_fraud_y_test_prediction = final_y_test_prediction[final_y_test[:, 1] == 1]
+final_fraud_accuracy = calculate_accuracy(final_fraud_y_test, final_fraud_y_test_prediction)
+print("Final fraud specific accuracy: {0: .2f}".format(final_fraud_accuracy))
 
 
 
